@@ -54,11 +54,18 @@ function App() {
     return combinations.reduce((total, combo) => total * combo, 1);
   };
 
-  const calculateAspectCombinations = () => {
-    if (selectedAspects.length === 0) {
-      return binomialCoefficient(8, 4); // Ways to choose 4 from 8
-    }
-    return 1;
+  const calculateWaysAtLeastOne = () => {
+    const totalWays = calculateTotalWays();
+    const waysNoSelected = calculateWaysNoSelected();
+    return totalWays - waysNoSelected;
+  };
+
+  const calculateRatio = () => {
+    const waysNoSelected = calculateWaysNoSelected();
+    const waysAtLeastOne = calculateWaysAtLeastOne();
+
+    if (waysNoSelected === 0) return "N/A";
+    return `1 : ${(waysAtLeastOne / waysNoSelected).toFixed(2)}`;
   };
 
   const binomialCoefficient = (n, k) => {
@@ -70,8 +77,8 @@ function App() {
     return result;
   };
 
-  const formatNumber = (num) => {
-    return num.toLocaleString(); // Adds commas for consistent number formatting
+  const formatScientific = (num) => {
+    return num.toExponential(2); // Convert to scientific notation with 2 decimal places
   };
 
   return (
@@ -90,30 +97,26 @@ function App() {
         <tbody>
           <tr>
             <td style={{ padding: "10px", border: "1px solid #ccc", fontWeight: "bold" }}>
-              Total Ways to Pick 6 Powers
+              Choose at Least 1 Selected
             </td>
             <td style={{ padding: "10px", border: "1px solid #ccc" }}>
-              {formatNumber(calculateTotalWays())}
-            </td>
-            <td style={{ padding: "10px", border: "1px solid #ccc", fontWeight: "bold" }}>
-              Ways to Pick None of the Selected Powers
-            </td>
-            <td style={{ padding: "10px", border: "1px solid #ccc" }}>
-              {formatNumber(calculateWaysNoSelected())}
+              {formatScientific(calculateWaysAtLeastOne())}
             </td>
           </tr>
           <tr>
             <td style={{ padding: "10px", border: "1px solid #ccc", fontWeight: "bold" }}>
-              Ways to Choose 4 Aspects
+              Choose None Selection
             </td>
             <td style={{ padding: "10px", border: "1px solid #ccc" }}>
-              {formatNumber(calculateAspectCombinations())}
+              {formatScientific(calculateWaysNoSelected())}
             </td>
+          </tr>
+          <tr>
             <td style={{ padding: "10px", border: "1px solid #ccc", fontWeight: "bold" }}>
-              Total Aspects Considered
+              Ratio (None:At Least 1)
             </td>
             <td style={{ padding: "10px", border: "1px solid #ccc" }}>
-              {selectedAspects.length === 0 ? 8 : selectedAspects.length}
+              {calculateRatio()}
             </td>
           </tr>
         </tbody>
